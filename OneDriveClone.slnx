@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="OneDriveClone.API/OneDriveClone.API.csproj" />
+  <Project Path="OneDriveClone.BLL/OneDriveClone.BLL.csproj" />
+  <Project Path="OneDriveClone.Core/OneDriveClone.Core.csproj" />
+  <Project Path="OneDriveClone.DAL/OneDriveClone.DAL.csproj" />
+</Solution>
