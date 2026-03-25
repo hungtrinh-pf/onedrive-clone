@@ -51,12 +51,11 @@ namespace OneDriveClone.DAL.Repository
 
         public async Task<FolderItem?> GetByIdAsync(string id)
         {
-            return await _context.FolderItems.SingleOrDefaultAsync(item => item.Id == id);
-        }
-
-        public async Task<IEnumerable<FolderItem>> GetByIdAsync(params string[] ids)
-        {
-            return _context.FolderItems.Where(item => ids.Contains(item.Id));
+            return await _context.FolderItems
+                .Include(item => item.Subfolders)
+                .Include(item => item.Files)
+                .AsSplitQuery()
+                .SingleOrDefaultAsync(item => item.Id == id);
         }
 
         public async Task<int> UpdateAsync(string id, FolderUpdateDto newItem)

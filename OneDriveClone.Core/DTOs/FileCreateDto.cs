@@ -1,6 +1,6 @@
 ﻿namespace OneDriveClone.Core.DTOs
 {
-    public class FileCreateDto
+    public struct FileCreateDto
     {
         public required string Name { get; set; }
         public required string Type { get; set; }

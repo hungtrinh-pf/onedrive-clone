@@ -1,6 +1,6 @@
 ﻿namespace OneDriveClone.Core.DTOs
 {
-    public class FolderReadDto
+    public struct FolderReadDto
     {
         public required string Id { get; set; }
         public required string Name { get; set; }
@@ -9,5 +9,7 @@
         public required string CreatedBy { get; set; }
         public DateTime ModifiedAt { get; set; }
         public required string ModifiedBy { get; set; }
+        public ICollection<FolderReadDto>? Subfolders { get; set; }
+        public ICollection<FileReadDto> Files { get; set; }
     }
 }

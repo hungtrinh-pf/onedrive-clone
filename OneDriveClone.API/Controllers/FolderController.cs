@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using OneDriveClone.API.Helpers;
 using OneDriveClone.BLL.IService;
 using OneDriveClone.Core.DTOs;
-using OneDriveClone.Core.Response;
 
 namespace OneDriveClone.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class FolderController(IFolderItemService folderItemService) : ControllerBase
@@ -12,42 +14,37 @@ namespace OneDriveClone.API.Controllers
         private readonly IFolderItemService _folderItemService = folderItemService;
 
         [HttpGet]
-        public async Task<object> GetFolders(string? id)
+        public async Task<IActionResult> GetFolders(string? id)
         {
             if (id is not null)
             {
                 var folderResponse = await _folderItemService.GetFolderByIdAsync(id);
-                Response.StatusCode = folderResponse.StatusCode;
-                return folderResponse;
+                return new ApiResponse<FolderReadDto>(folderResponse);
             }
             
             var foldersResponse = await _folderItemService.GetAllFoldersAsync();
-            Response.StatusCode = foldersResponse.StatusCode;
-            return foldersResponse;
+            return new ApiResponse<IEnumerable<FolderReadDto>>(foldersResponse);
         }
 
         [HttpPost]
-        public async Task<ResponseObject<int>> CreateFolder([FromBody] FolderCreateDto item)
+        public async Task<IActionResult> CreateFolder([FromBody] FolderCreateDto item)
         {
             var response = await _folderItemService.CreateFolderAsync(item);
-            Response.StatusCode = response.StatusCode;
-            return response;
+            return new ApiResponse<int>(response);
         }
 
         [HttpPut]
-        public async Task<ResponseObject<int>> UpdateFolder([FromBody] FolderUpdateDto item, string id)
+        public async Task<IActionResult> UpdateFolder([FromBody] FolderUpdateDto item, string id)
         {
             var response = await _folderItemService.UpdateFolderAsync(id, item);
-            Response.StatusCode = response.StatusCode;
-            return response;
+            return new ApiResponse<int>(response);
         }
 
         [HttpDelete]
-        public async Task<ResponseObject<int>> DeleteFolder(string id)
+        public async Task<IActionResult> DeleteFolder(string id)
         {
             var response = await _folderItemService.DeleteFolderAsync(id);
-            Response.StatusCode = response.StatusCode;
-            return response;
+            return new ApiResponse<int>(response);
         }
     }
 }

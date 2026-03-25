@@ -7,7 +7,6 @@ namespace OneDriveClone.DAL.IRepository
     {
         Task<IEnumerable<FolderItem>> GetAllAsync();
         Task<FolderItem?> GetByIdAsync(string id);
-        Task<IEnumerable<FolderItem>> GetByIdAsync(params string[] ids);
         Task<int> CreateAsync(FolderItem item);
         Task<int> UpdateAsync(string id, FolderUpdateDto newItem);
         Task<int> DeleteAsync(string id);

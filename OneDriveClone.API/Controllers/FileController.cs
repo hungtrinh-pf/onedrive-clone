@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OneDriveClone.API.Helpers;
 using OneDriveClone.BLL.IService;
 using OneDriveClone.Core.DTOs;
@@ -6,6 +7,7 @@ using OneDriveClone.Core.Response;
 
 namespace OneDriveClone.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class FileController(IFileItemService fileItemService) : ControllerBase
@@ -13,11 +15,10 @@ namespace OneDriveClone.API.Controllers
         private readonly IFileItemService _fileItemService = fileItemService;
 
         [HttpGet]
-        public async Task<ResponseObject<IEnumerable<FileReadDto>>> GetFiles()
+        public async Task<IActionResult> GetFiles()
         {
             var response = await _fileItemService.GetAllFilesAsync();
-            Response.StatusCode = response.StatusCode;
-            return response;
+            return new ApiResponse<IEnumerable<FileReadDto>>(response);
         }
 
         [HttpGet("{id}")]
@@ -35,8 +36,14 @@ namespace OneDriveClone.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ResponseObject<int>> CreateFile([FromForm] FileUploadForm uploadForm)
+        public async Task<IActionResult> CreateFile([FromForm] FileUploadForm uploadForm)
         {
+            if (uploadForm.File.Length > 5_000_000)
+            {
+                var errorResponse = Result<int>.BadRequest("Upload file must be under 5 MB");
+                return new ApiResponse<int>(errorResponse);
+            }
+
             using var memoryStream = new MemoryStream();
             await uploadForm.File.CopyToAsync(memoryStream);
 
@@ -51,24 +58,21 @@ namespace OneDriveClone.API.Controllers
             };
 
             var response = await _fileItemService.CreateFileAsync(fileDto);
-            Response.StatusCode = response.StatusCode;
-            return response;
+            return new ApiResponse<int>(response);
         }
 
         [HttpPut]
-        public async Task<ResponseObject<int>> UpdateFile([FromBody] FileUpdateDto item, string id)
+        public async Task<IActionResult> UpdateFile([FromBody] FileUpdateDto item, string id)
         {
             var response = await _fileItemService.UpdateFileAsync(id, item);
-            Response.StatusCode = response.StatusCode;
-            return response;
+            return new ApiResponse<int>(response);
         }
 
         [HttpDelete]
-        public async Task<ResponseObject<int>> DeleteFile(string id)
+        public async Task<IActionResult> DeleteFile(string id)
         {
             var response = await _fileItemService.DeleteFileAsync(id);
-            Response.StatusCode = response.StatusCode;
-            return response;
+            return new ApiResponse<int>(response);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using OneDriveClone.BLL.IService;
 using OneDriveClone.Core.DTOs;
-using OneDriveClone.Core.Entities;
+using OneDriveClone.Core.Mappers;
 using OneDriveClone.Core.Response;
 using OneDriveClone.DAL.IRepository;
 
@@ -12,19 +12,7 @@ namespace OneDriveClone.BLL.Service
 
         public async Task<ResponseObject<int>> CreateFileAsync(FileCreateDto item)
         {
-            var file = new FileItem
-            {
-                Id = $"{Guid.NewGuid()}",
-                Name = item.Name,
-                Type = item.Type,
-                FolderId = item.FolderId,
-                CreatedAt = DateTime.Now,
-                CreatedBy = item.CreatedBy,
-                ModifiedAt = DateTime.Now,
-                ModifiedBy = item.ModifiedBy,
-                Content = item.Content,
-            };
-
+            var file = FileMapper.ToFile(item);
             int createdCount = await _fileItemRepository.CreateAsync(file);
             return Result<int>.Created($"{createdCount} file(s) uploaded", createdCount);
         }
@@ -46,17 +34,7 @@ namespace OneDriveClone.BLL.Service
 
             foreach (var file in files)
             {
-                var fileDto = new FileReadDto
-                {
-                    Id = file.Id,
-                    Name = file.Name,
-                    Type = file.Type,
-                    FolderId = file.FolderId,
-                    CreatedAt = file.CreatedAt,
-                    CreatedBy = file.CreatedBy,
-                    ModifiedAt = file.ModifiedAt,
-                    ModifiedBy = file.ModifiedBy,
-                };
+                var fileDto = FileMapper.ToReadDto(file);
                 fileDtoList.Add(fileDto);
             }
 
@@ -66,18 +44,7 @@ namespace OneDriveClone.BLL.Service
         public async Task<FileReadDto> GetFileAsync(string id)
         {
             var file = await _fileItemRepository.GetByIdAsync(id) ?? throw new Exception($"File with ID {id} not found");
-            return new FileReadDto
-            {
-                Id = file.Id,
-                Name = file.Name,
-                Type = file.Type,
-                FolderId = file.FolderId,
-                CreatedAt = file.CreatedAt,
-                CreatedBy = file.CreatedBy,
-                ModifiedAt = file.ModifiedAt,
-                ModifiedBy = file.ModifiedBy,
-                Content = file.Content,
-            };
+            return FileMapper.ToReadDto(file, includeContent: true);
         }
 
         public async Task<ResponseObject<int>> UpdateFileAsync(string id, FileUpdateDto newItem)

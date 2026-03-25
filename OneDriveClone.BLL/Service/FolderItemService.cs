@@ -1,6 +1,6 @@
 ﻿using OneDriveClone.BLL.IService;
 using OneDriveClone.Core.DTOs;
-using OneDriveClone.Core.Entities;
+using OneDriveClone.Core.Mappers;
 using OneDriveClone.Core.Response;
 using OneDriveClone.DAL.IRepository;
 
@@ -15,29 +15,13 @@ namespace OneDriveClone.BLL.Service
             if (item.ParentId is not null)
             {
                 var parentFolder = await _folderItemRepository.GetByIdAsync(item.ParentId);
-                if (parentFolder is not null)
+                if (parentFolder is not null && parentFolder.Subfolders.Any(folder => folder.Name == item.Name))
                 {
-                    var allFolders = await _folderItemRepository.GetAllAsync();
-                    var subfolders = allFolders.Where(item => item.ParentId == parentFolder.Id);
-
-                    if (subfolders.Any(folder => folder.Name == item.Name))
-                    {
-                        return Result<int>.BadRequest($"A folder with name '{item.Name}' already exists.");
-                    }
+                    return Result<int>.BadRequest($"A folder with name '{item.Name}' already exists.");
                 }
             }
 
-            var newFolder = new FolderItem
-            {
-                Id = item.ParentId is not null ? $"{Guid.NewGuid()}" : "root",
-                Name = item.Name,
-                ParentId = item.ParentId,
-                CreatedAt = DateTime.Now,
-                CreatedBy = item.CreatedBy,
-                ModifiedAt = DateTime.Now,
-                ModifiedBy = item.ModifiedBy,
-            };
-
+            var newFolder = FolderMapper.ToFolder(item);
             int createdCount = await _folderItemRepository.CreateAsync(newFolder);
             return Result<int>.Created($"{createdCount} folder(s) created", createdCount);
         }
@@ -59,16 +43,7 @@ namespace OneDriveClone.BLL.Service
 
             foreach (var folder in folders)
             {
-                var folderDto = new FolderReadDto
-                {
-                    Id = folder.Id,
-                    Name = folder.Name,
-                    CreatedAt = folder.CreatedAt,
-                    CreatedBy = folder.CreatedBy,
-                    ModifiedAt = folder.ModifiedAt,
-                    ModifiedBy = folder.ModifiedBy,
-                    ParentId = folder.ParentId,
-                };
+                var folderDto = FolderMapper.ToReadDto(folder);
                 folderDtoList.Add(folderDto);
             }
 
@@ -83,16 +58,7 @@ namespace OneDriveClone.BLL.Service
                 return Result<FolderReadDto>.NotFound($"Folder with ID {id} not found");
             }
 
-            var folderDto = new FolderReadDto
-            {
-                Id = folder.Id,
-                Name = folder.Name,
-                CreatedAt = folder.CreatedAt,
-                CreatedBy = folder.CreatedBy,
-                ModifiedAt = folder.ModifiedAt,
-                ModifiedBy = folder.ModifiedBy,
-                ParentId = folder.ParentId,
-            };
+            var folderDto = FolderMapper.ToReadDto(folder);
             return Result<FolderReadDto>.Ok("Folder retrieved", folderDto);
         }
 
