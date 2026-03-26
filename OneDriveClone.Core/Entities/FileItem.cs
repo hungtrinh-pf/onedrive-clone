@@ -5,9 +5,12 @@ namespace OneDriveClone.Core.Entities
     public class FileItem
     {
         [Key]
+        [MaxLength(36)]
         public required string Id { get; set; }
 
+        [MaxLength(255)]
         public required string Name { get; set; }
+
         public required string Type { get; set; }
         public DateTime CreatedAt { get; set; }
         public required string CreatedBy { get; set; }

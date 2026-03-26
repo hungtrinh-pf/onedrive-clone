@@ -9,7 +9,7 @@
         public required string CreatedBy { get; set; }
         public DateTime ModifiedAt { get; set; }
         public required string ModifiedBy { get; set; }
-        public ICollection<FolderReadDto>? Subfolders { get; set; }
+        public ICollection<FolderReadDto> Subfolders { get; set; }
         public ICollection<FileReadDto> Files { get; set; }
     }
 }

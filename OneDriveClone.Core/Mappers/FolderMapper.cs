@@ -16,8 +16,8 @@ namespace OneDriveClone.Core.Mappers
                 ModifiedAt = folder.ModifiedAt,
                 ModifiedBy = folder.ModifiedBy,
                 ParentId = folder.ParentId,
-                Subfolders = folder.Subfolders.Count == 0 ? null
-                    : [.. folder.Subfolders.Select(subfolder => ToReadDto(subfolder) with { Subfolders = null })],
+                Subfolders = folder.Subfolders.Count == 0 ? []
+                    : [.. folder.Subfolders.Select(subfolder => ToReadDto(subfolder) with { Subfolders = [] })],
                 Files = [.. folder.Files.Select(file => FileMapper.ToReadDto(file))],
             };
         }

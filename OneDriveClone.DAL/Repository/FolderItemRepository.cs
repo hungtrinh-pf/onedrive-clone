@@ -54,7 +54,6 @@ namespace OneDriveClone.DAL.Repository
             return await _context.FolderItems
                 .Include(item => item.Subfolders)
                 .Include(item => item.Files)
-                .AsSplitQuery()
                 .SingleOrDefaultAsync(item => item.Id == id);
         }
 

@@ -12,8 +12,8 @@ using OneDriveClone.DAL;
 namespace OneDriveClone.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260324074949_RenameToContent")]
-    partial class RenameToContent
+    [Migration("20260325105804_InitDB")]
+    partial class InitDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,7 +28,8 @@ namespace OneDriveClone.DAL.Migrations
             modelBuilder.Entity("OneDriveClone.Core.Entities.FileItem", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
 
                     b.Property<byte[]>("Content")
                         .HasColumnType("varbinary(max)");
@@ -42,7 +43,7 @@ namespace OneDriveClone.DAL.Migrations
 
                     b.Property<string>("FolderId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(36)");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
@@ -53,7 +54,8 @@ namespace OneDriveClone.DAL.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -69,7 +71,8 @@ namespace OneDriveClone.DAL.Migrations
             modelBuilder.Entity("OneDriveClone.Core.Entities.FolderItem", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -87,10 +90,11 @@ namespace OneDriveClone.DAL.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("ParentId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(36)");
 
                     b.HasKey("Id");
 
