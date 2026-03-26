@@ -61,14 +61,14 @@ namespace OneDriveClone.API.Controllers
             return new ApiResponse<int>(response);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateFile([FromBody] FileUpdateDto item, string id)
         {
             var response = await _fileItemService.UpdateFileAsync(id, item);
             return new ApiResponse<int>(response);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFile(string id)
         {
             var response = await _fileItemService.DeleteFileAsync(id);

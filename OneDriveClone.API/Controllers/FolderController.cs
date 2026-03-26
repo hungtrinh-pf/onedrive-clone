@@ -14,16 +14,17 @@ namespace OneDriveClone.API.Controllers
         private readonly IFolderItemService _folderItemService = folderItemService;
 
         [HttpGet]
-        public async Task<IActionResult> GetFolders(string? id)
+        public async Task<IActionResult> GetFolders()
         {
-            if (id is not null)
-            {
-                var folderResponse = await _folderItemService.GetFolderByIdAsync(id);
-                return new ApiResponse<FolderReadDto>(folderResponse);
-            }
-            
             var foldersResponse = await _folderItemService.GetAllFoldersAsync();
             return new ApiResponse<IEnumerable<FolderReadDto>>(foldersResponse);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetFolderById(string id)
+        {
+            var folderResponse = await _folderItemService.GetFolderByIdAsync(id);
+            return new ApiResponse<FolderReadDto>(folderResponse);
         }
 
         [HttpPost]
@@ -33,14 +34,14 @@ namespace OneDriveClone.API.Controllers
             return new ApiResponse<int>(response);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateFolder([FromBody] FolderUpdateDto item, string id)
         {
             var response = await _folderItemService.UpdateFolderAsync(id, item);
             return new ApiResponse<int>(response);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFolder(string id)
         {
             var response = await _folderItemService.DeleteFolderAsync(id);
