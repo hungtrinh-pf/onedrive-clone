@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OneDriveClone.Core.DTOs;
 using OneDriveClone.Core.Entities;
+using OneDriveClone.Core.Mappers;
 using OneDriveClone.DAL.IRepository;
 
 namespace OneDriveClone.DAL.Repository
@@ -23,8 +24,9 @@ namespace OneDriveClone.DAL.Repository
             return descendants;
         }
 
-        public async Task<int> CreateAsync(FolderItem item)
+        public async Task<int> CreateAsync(FolderCreateDto createDto)
         {
+            var item = FolderMapper.ToFolder(createDto);
             await _context.FolderItems.AddAsync(item);
             return _context.SaveChanges();
         }
@@ -44,17 +46,19 @@ namespace OneDriveClone.DAL.Repository
             return _context.SaveChanges();
         }
 
-        public async Task<IEnumerable<FolderItem>> GetAllAsync()
+        public async Task<IEnumerable<FolderReadDto>> GetAllAsync()
         {
-            return _context.FolderItems;
+            return _context.FolderItems.Select(folder => FolderMapper.ToReadDto(folder));
         }
 
-        public async Task<FolderItem?> GetByIdAsync(string id)
+        public async Task<FolderReadDto> GetByIdAsync(string id)
         {
-            return await _context.FolderItems
+            var folder = await _context.FolderItems
                 .Include(item => item.Subfolders)
                 .Include(item => item.Files)
-                .SingleOrDefaultAsync(item => item.Id == id);
+                .FirstOrDefaultAsync(item => item.Id == id);
+
+            return folder is not null ? FolderMapper.ToReadDto(folder) : new FolderReadDto();
         }
 
         public async Task<int> UpdateAsync(string id, FolderUpdateDto newItem)

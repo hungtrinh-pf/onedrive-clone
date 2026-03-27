@@ -1,6 +1,5 @@
 ﻿using OneDriveClone.BLL.IService;
 using OneDriveClone.Core.DTOs;
-using OneDriveClone.Core.Mappers;
 using OneDriveClone.Core.Response;
 using OneDriveClone.DAL.IRepository;
 
@@ -12,8 +11,7 @@ namespace OneDriveClone.BLL.Service
 
         public async Task<ResponseObject<int>> CreateFileAsync(FileCreateDto item)
         {
-            var file = FileMapper.ToFile(item);
-            int createdCount = await _fileItemRepository.CreateAsync(file);
+            int createdCount = await _fileItemRepository.CreateAsync(item);
             return Result<int>.Created($"{createdCount} file(s) uploaded", createdCount);
         }
 
@@ -30,21 +28,13 @@ namespace OneDriveClone.BLL.Service
         public async Task<ResponseObject<IEnumerable<FileReadDto>>> GetAllFilesAsync()
         {
             var files = await _fileItemRepository.GetAllAsync();
-            var fileDtoList = new List<FileReadDto>();
-
-            foreach (var file in files)
-            {
-                var fileDto = FileMapper.ToReadDto(file);
-                fileDtoList.Add(fileDto);
-            }
-
-            return Result<IEnumerable<FileReadDto>>.Ok($"{fileDtoList.Count} file(s) retrieved", fileDtoList);
+            return Result<IEnumerable<FileReadDto>>.Ok($"{files.Count()} file(s) retrieved", files);
         }
 
         public async Task<FileReadDto> GetFileAsync(string id)
         {
-            var file = await _fileItemRepository.GetByIdAsync(id) ?? throw new Exception($"File with ID {id} not found");
-            return FileMapper.ToReadDto(file, includeContent: true);
+            var file = await _fileItemRepository.GetByIdAsync(id);
+            return file.Id != string.Empty ? file : throw new Exception($"File with ID {id} not found");
         }
 
         public async Task<ResponseObject<int>> UpdateFileAsync(string id, FileUpdateDto newItem)

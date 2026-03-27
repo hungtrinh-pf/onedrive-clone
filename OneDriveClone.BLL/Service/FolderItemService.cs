@@ -1,6 +1,5 @@
 ﻿using OneDriveClone.BLL.IService;
 using OneDriveClone.Core.DTOs;
-using OneDriveClone.Core.Mappers;
 using OneDriveClone.Core.Response;
 using OneDriveClone.DAL.IRepository;
 
@@ -15,14 +14,13 @@ namespace OneDriveClone.BLL.Service
             if (item.ParentId is not null)
             {
                 var parentFolder = await _folderItemRepository.GetByIdAsync(item.ParentId);
-                if (parentFolder is not null && parentFolder.Subfolders.Any(folder => folder.Name == item.Name))
+                if (parentFolder.Subfolders.Any(folder => folder.Name == item.Name))
                 {
                     return Result<int>.BadRequest($"A folder with name '{item.Name}' already exists.");
                 }
             }
 
-            var newFolder = FolderMapper.ToFolder(item);
-            int createdCount = await _folderItemRepository.CreateAsync(newFolder);
+            int createdCount = await _folderItemRepository.CreateAsync(item);
             return Result<int>.Created($"{createdCount} folder(s) created", createdCount);
         }
 
@@ -39,27 +37,17 @@ namespace OneDriveClone.BLL.Service
         public async Task<ResponseObject<IEnumerable<FolderReadDto>>> GetAllFoldersAsync()
         {
             var folders = await _folderItemRepository.GetAllAsync();
-            var folderDtoList = new List<FolderReadDto>();
-
-            foreach (var folder in folders)
-            {
-                var folderDto = FolderMapper.ToReadDto(folder);
-                folderDtoList.Add(folderDto);
-            }
-
-            return Result<IEnumerable<FolderReadDto>>.Ok($"{folderDtoList.Count} folder(s) retrieved", folderDtoList);
+            return Result<IEnumerable<FolderReadDto>>.Ok($"{folders.Count()} folder(s) retrieved", folders);
         }
 
         public async Task<ResponseObject<FolderReadDto>> GetFolderByIdAsync(string id)
         {
             var folder = await _folderItemRepository.GetByIdAsync(id);
-            if (folder is null)
+            if (folder.Id == string.Empty)
             {
                 return Result<FolderReadDto>.NotFound($"Folder with ID {id} not found");
             }
-
-            var folderDto = FolderMapper.ToReadDto(folder);
-            return Result<FolderReadDto>.Ok("Folder retrieved", folderDto);
+            return Result<FolderReadDto>.Ok("Folder retrieved", folder);
         }
 
         public async Task<ResponseObject<int>> UpdateFolderAsync(string id, FolderUpdateDto newItem)

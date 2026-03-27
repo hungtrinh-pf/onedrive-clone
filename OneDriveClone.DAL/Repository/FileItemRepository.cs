@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OneDriveClone.Core.DTOs;
-using OneDriveClone.Core.Entities;
+using OneDriveClone.Core.Mappers;
 using OneDriveClone.DAL.IRepository;
 
 namespace OneDriveClone.DAL.Repository
@@ -9,8 +9,9 @@ namespace OneDriveClone.DAL.Repository
     {
         private readonly AppDbContext _context = context;
 
-        public async Task<int> CreateAsync(FileItem item)
+        public async Task<int> CreateAsync(FileCreateDto createDto)
         {
+            var item = FileMapper.ToFile(createDto);
             await _context.FileItems.AddAsync(item);
             return _context.SaveChanges();
         }
@@ -26,14 +27,16 @@ namespace OneDriveClone.DAL.Repository
             return -1;
         }
 
-        public async Task<IEnumerable<FileItem>> GetAllAsync()
+        public async Task<IEnumerable<FileReadDto>> GetAllAsync()
         {
-            return [.. _context.FileItems];
+            var files = _context.FileItems.Select(file => FileMapper.ToReadDto(file));
+            return files;
         }
 
-        public async Task<FileItem?> GetByIdAsync(string id)
+        public async Task<FileReadDto> GetByIdAsync(string id)
         {
-            return await _context.FileItems.SingleOrDefaultAsync(item => item.Id == id);
+            var file = await _context.FileItems.FirstOrDefaultAsync(item => item.Id == id);
+            return file is not null ? FileMapper.ToReadDto(file, includeContent: true) : new FileReadDto();
         }
 
         public async Task<int> UpdateAsync(string id, FileUpdateDto newItem)

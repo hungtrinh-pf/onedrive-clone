@@ -1,13 +1,12 @@
 ﻿using OneDriveClone.Core.DTOs;
-using OneDriveClone.Core.Entities;
 
 namespace OneDriveClone.DAL.IRepository
 {
     public interface IFolderItemRepository
     {
-        Task<IEnumerable<FolderItem>> GetAllAsync();
-        Task<FolderItem?> GetByIdAsync(string id);
-        Task<int> CreateAsync(FolderItem item);
+        Task<IEnumerable<FolderReadDto>> GetAllAsync();
+        Task<FolderReadDto> GetByIdAsync(string id);
+        Task<int> CreateAsync(FolderCreateDto item);
         Task<int> UpdateAsync(string id, FolderUpdateDto newItem);
         Task<int> DeleteAsync(string id);
     }
