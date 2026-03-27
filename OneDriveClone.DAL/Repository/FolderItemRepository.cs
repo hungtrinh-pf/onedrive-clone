@@ -11,7 +11,7 @@ namespace OneDriveClone.DAL.Repository
 
         private async Task<List<FolderItem>> GetDescendants(string id)
         {
-            var subfolders = await  _context.FolderItems.Where(f => f.ParentId == id).ToListAsync();
+            var subfolders = await _context.FolderItems.Where(f => f.ParentId == id).ToListAsync();
 
             var descendants = new List<FolderItem>();
             foreach (var subfolder in subfolders)

@@ -18,7 +18,7 @@ namespace OneDriveClone.API.Helpers
         {
             var response = context.HttpContext.Response;
             response.StatusCode = ResponseObject.StatusCode;
-            if (ResponseObject.StatusCode == 204)
+            if (ResponseObject.StatusCode == StatusCodes.Status204NoContent)
             {
                 return;
             }
