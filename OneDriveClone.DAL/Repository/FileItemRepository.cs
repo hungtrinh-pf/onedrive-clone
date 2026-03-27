@@ -29,8 +29,7 @@ namespace OneDriveClone.DAL.Repository
 
         public async Task<IEnumerable<FileReadDto>> GetAllAsync()
         {
-            var files = _context.FileItems.Select(file => FileMapper.ToReadDto(file));
-            return files;
+            return _context.FileItems.Select(file => FileMapper.ToReadDto(file));
         }
 
         public async Task<FileReadDto> GetByIdAsync(string id)

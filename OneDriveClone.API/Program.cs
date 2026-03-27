@@ -20,26 +20,6 @@ builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
-// Add logging for JwtBearer
-builder.Services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
-{
-    options.Events = new JwtBearerEvents
-    {
-        OnAuthenticationFailed = context =>
-        {
-            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-            logger.LogError(context.Exception, "JWT authentication failed.");
-            return Task.CompletedTask;
-        },
-        OnTokenValidated = context =>
-        {
-            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-            logger.LogInformation("Token validated for {name}", context.Principal?.Identity?.Name ?? "<unknown>");
-            return Task.CompletedTask;
-        }
-    };
-});
-
 builder.Services.AddAuthorization();
 
 // Add services to the container.
