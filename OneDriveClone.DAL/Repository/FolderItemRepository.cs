@@ -1,16 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OneDriveClone.Core.DTOs;
+using OneDriveClone.Core.DTOs.Folder;
 using OneDriveClone.Core.Entities;
 using OneDriveClone.Core.Mappers;
 using OneDriveClone.DAL.IRepository;
 
 namespace OneDriveClone.DAL.Repository
 {
-    public class FolderItemRepository(AppDbContext context) : IFolderItemRepository
+    internal class FolderItemRepository(AppDbContext context) : IFolderItemRepository
     {
         private readonly AppDbContext _context = context;
 
-        private async Task<List<FolderItem>> GetDescendants(string id)
+        private async Task<IList<FolderItem>> GetDescendants(string id)
         {
             var subfolders = await _context.FolderItems.Where(f => f.ParentId == id).ToListAsync();
 

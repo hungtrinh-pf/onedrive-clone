@@ -1,4 +1,4 @@
-﻿using OneDriveClone.Core.DTOs;
+﻿using OneDriveClone.Core.DTOs.File;
 
 namespace OneDriveClone.DAL.IRepository
 {

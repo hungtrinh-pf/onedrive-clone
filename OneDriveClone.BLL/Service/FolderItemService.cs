@@ -1,11 +1,11 @@
 ﻿using OneDriveClone.BLL.IService;
-using OneDriveClone.Core.DTOs;
+using OneDriveClone.Core.DTOs.Folder;
 using OneDriveClone.Core.Response;
 using OneDriveClone.DAL.IRepository;
 
 namespace OneDriveClone.BLL.Service
 {
-    public class FolderItemService(IFolderItemRepository folderItemRepository) : IFolderItemService
+    internal class FolderItemService(IFolderItemRepository folderItemRepository) : IFolderItemService
     {
         private readonly IFolderItemRepository _folderItemRepository = folderItemRepository;
 

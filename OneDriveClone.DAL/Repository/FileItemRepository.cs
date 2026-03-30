@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OneDriveClone.Core.DTOs;
+using OneDriveClone.Core.DTOs.File;
 using OneDriveClone.Core.Mappers;
 using OneDriveClone.DAL.IRepository;
 
 namespace OneDriveClone.DAL.Repository
 {
-    public class FileItemRepository(AppDbContext context) : IFileItemRepository
+    internal class FileItemRepository(AppDbContext context) : IFileItemRepository
     {
         private readonly AppDbContext _context = context;
 

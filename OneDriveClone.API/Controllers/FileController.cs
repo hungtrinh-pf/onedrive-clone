@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OneDriveClone.API.Helpers;
 using OneDriveClone.BLL.IService;
-using OneDriveClone.Core.DTOs;
+using OneDriveClone.Core.DTOs.File;
 using OneDriveClone.Core.Response;
 
 namespace OneDriveClone.API.Controllers

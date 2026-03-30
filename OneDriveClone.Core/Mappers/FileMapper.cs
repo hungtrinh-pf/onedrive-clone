@@ -1,4 +1,4 @@
-﻿using OneDriveClone.Core.DTOs;
+﻿using OneDriveClone.Core.DTOs.File;
 using OneDriveClone.Core.Entities;
 
 namespace OneDriveClone.Core.Mappers

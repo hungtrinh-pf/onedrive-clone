@@ -1,4 +1,6 @@
-﻿namespace OneDriveClone.Core.DTOs
+﻿using OneDriveClone.Core.DTOs.File;
+
+namespace OneDriveClone.Core.DTOs.Folder
 {
     public struct FolderReadDto
     {

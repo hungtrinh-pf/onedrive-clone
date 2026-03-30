@@ -1,6 +1,6 @@
-﻿namespace OneDriveClone.Core.DTOs
+﻿namespace OneDriveClone.Core.DTOs.Folder
 {
-    public struct FileUpdateDto
+    public struct FolderUpdateDto
     {
         public required string Name { get; set; }
         public required string ModifiedBy { get; set; }

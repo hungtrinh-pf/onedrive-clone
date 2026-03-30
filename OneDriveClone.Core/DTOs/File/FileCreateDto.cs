@@ -1,4 +1,4 @@
-﻿namespace OneDriveClone.Core.DTOs
+﻿namespace OneDriveClone.Core.DTOs.File
 {
     public struct FileCreateDto
     {
